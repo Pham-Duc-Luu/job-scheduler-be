@@ -1,0 +1,89 @@
+# --- PYTHON ---
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pkl
+*.pytorch
+*.so
+
+# Virtual Environments
+.venv/
+venv/
+env/
+ENV/
+
+# Python tooling
+.poetry/
+.venv.bak/
+
+# Byte-compiled / optimized / DLL files
+*.pyc
+*.pyo
+*.pyd
+
+# C extensions
+*.so
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints
+
+# --- FASTAPI / UVICORN / LOGS ---
+*.log
+logs/
+*.pid
+
+# --- ENVIRONMENT FILES ---
+.env
+.env.*
+!.env.example
+
+# --- DATABASE / STORAGE ---
+*.db
+*.sqlite
+*.sqlite3
+alembic/versions/*.pyc
+alembic/versions/__pycache__/
+
+# --- PYTHON BUILD ---
+build/
+dist/
+pip-wheel-metadata/
+*.egg-info/
+*.egg
+
+# --- TOOLING ---
+.mypy_cache/
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.cache/
+
+# --- IDE ---
+# PyCharm / IntelliJ
+.idea/
+*.iml
+
+# VSCode
+.vscode/
+
+# Eclipse
+.project
+.pydevproject
+
+venv
+
+# --- DOCKER ---
+docker/*/tmp/
+docker-compose.override.yml
+docker-compose.local.yml
+
+# --- TEST ---
+pytestdebug.log
+coverage.xml
+
+# --- OTHER ---
+.DS_Store
+Thumbs.db
+*.orig
