@@ -4,7 +4,8 @@ from typing import List, Tuple, Dict, Any
 from ortools.sat.python import cp_model
 import collections
 from fastapi import APIRouter, Depends, HTTPException, status
-from app.scheduling_optimization_ortools.main import Employee_Scheduling_Problems
+# from app.scheduling_optimization_ortools.main import Employee_Scheduling_Problems
+from app.scheduling_optimization_ortools.main_1 import Employee_Scheduling_Problems
 
 router = APIRouter(prefix="/schedula", tags=["schedulas"])
 

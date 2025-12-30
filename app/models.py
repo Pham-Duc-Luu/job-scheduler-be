@@ -404,6 +404,8 @@ class JobByEmployee(Base):
         default=JobStatus.planning
     )
 
+    scheduled_weekday = Column(Integer)
+
     # ===== Thời gian thực tế =====
     finishDate = Column(DateTime, nullable=True)
 
@@ -417,11 +419,16 @@ class EmployeeBlockTime(Base):
     __tablename__ = "employee_block_time"
 
     id = Column(Integer, primary_key=True, index=True)
-    job_type = Column(String)
     job_duration = Column(Integer)
+
+    start_hour = Column(Integer)
+    # ví dụ: 8 = 8h sáng
+
     employee_id = Column(Integer, ForeignKey(
         "employee.id", ondelete="CASCADE"))
-    requested_datetime = Column(DateTime)
+
+    expected_weekday = Column(Integer, nullable=False)
+    # 0=Monday ... 6=Sunday
 
     title = Column(String)
     description = Column(String)

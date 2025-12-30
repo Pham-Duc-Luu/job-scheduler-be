@@ -50,12 +50,12 @@ class FactoryReadLite(BaseModel):
 class JobByEmployeeRead(BaseModel):
     id: int
     companyId: int
-
+    scheduled_weekday: Optional[int]
     duration: Optional[int]
     name: Optional[str]
     skillNeeded: Optional[str]
     description: Optional[str]
-
+    employeeId: Optional[int]
     expected_weekday: Optional[int]
     start_hour: Optional[int]
     end_hour: Optional[int]

@@ -8,12 +8,12 @@ from typing import List
 
 from app.database import SessionLocal
 from app.models import Company, Employee, EmployeeBlockTime, EmployeeToFactoryDistance, Factory, FactoryDistance, JobByEmployee, skill_list
-from app.scheduling_optimization_ortools.main import Employee_Scheduling_Problems
+from app.scheduling_optimization_ortools.main_1 import Employee_Scheduling_Problems
 from app.schemas.jobByEmployee import JobByEmployeeCreate, JobByEmployeeRead, JobByEmployeeUpdate
 from sqlalchemy.exc import IntegrityError
 
 from app.services.job_for_employee import validate_company, validate_job
-from app.utils import weekday_to_date_this_week
+from app.utils import parse_start_safe, weekday_to_date_this_week
 
 
 router = APIRouter()
@@ -233,7 +233,7 @@ def getJobGeneral(
     em_locations = []
     fa_locations = []
     jobs = []
-
+    employeeBlockTime = []
     for e in employeesQuery:
         employees.append({
             "employee_id": f"em_{e.id}",  # e.id là int → cần str
@@ -314,7 +314,18 @@ def getJobGeneral(
                 "reference_point": f"lo_fa_{fa_to.id}",
             })
 
-    return {"employees": employees, "locations": em_locations + fa_locations, "jobs": jobs, "distances": result, "blocked_times": []}
+    for blocked in blockedTimes:
+
+        employeeBlockTime.append({
+            "job_type": "any",
+            "job_duration": blocked.job_duration,
+            "employee_id": f"em_{blocked.employee_id}",
+            "requested_date": weekday_to_date_this_week(blocked.expected_weekday).date(),
+            "blocked_id": f"bl_{blocked.id}",
+            "start": blocked.start_hour
+        })
+
+    return {"employees": employees, "locations": em_locations + fa_locations, "jobs": jobs, "distances": result, "blocked_times": employeeBlockTime}
 
 
 @router.post("/companies/{company_id}/schedule-job")
@@ -325,11 +336,25 @@ def getScheduleJob(company_id: int,
     payload_json = jsonable_encoder(payload)
 
     schedule = Employee_Scheduling_Problems(payload_json)["data"]
-    print(schedule)
+    # print(schedule)
 
     for em in schedule:
         employee_id = em["employee_id"].split("_", 1)[1]
-
+        print("em id" + employee_id)
         for job in em["jobs"]:
             job_id = job["job_id"].split("_", 1)[1]
             factory_id = job["location_id"].split("_", 1)[1]
+
+            scheduled_weekday_start, start_hour = parse_start_safe(
+                job["start"])
+            scheduled_weekday_end, end_hour = parse_start_safe(job["end"])
+
+            jobQuery = db.query(JobByEmployee).filter(
+                JobByEmployee.id == job_id).first()
+
+            jobQuery.employeeId = employee_id
+            jobQuery.scheduled_weekday = scheduled_weekday_start
+            jobQuery.start_hour = start_hour
+            jobQuery.end_hour = end_hour
+
+            db.commit()

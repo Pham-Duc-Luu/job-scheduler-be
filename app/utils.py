@@ -114,3 +114,26 @@ def weekday_to_date_this_week(
         second=0,
         microsecond=0
     )
+
+
+def parse_start_safe(start: str):
+    parts = start.split("-")
+    if len(parts) < 2:
+        raise ValueError("Invalid start format")
+
+    weekday_str, hour_str = parts[0], parts[1]
+
+    weekday_map = {
+        "Monday": 0,
+        "Tuesday": 1,
+        "Wednesday": 2,
+        "Thursday": 3,
+        "Friday": 4,
+        "Saturday": 5,
+        "Sunday": 6,
+    }
+
+    if weekday_str not in weekday_map:
+        raise ValueError("Invalid weekday")
+
+    return weekday_map[weekday_str], int(hour_str)
